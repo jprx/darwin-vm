@@ -4,6 +4,10 @@ Run iOS/ macOS in Qemu. Supports emulating iPhone 17, 16, 15, 14, 13, and 12
 (A19-A14) and M5-M1 Macs (tested with Macbook Air and Mac Mini). You can debug
 the kernel, edit the root filesystem, and run a root shell + custom programs.
 
+> **Running the firmware-prep step on Linux instead of a Mac?** See
+> [LINUX.md](LINUX.md) ([中文](LINUX.zh-CN.md)) for the extra dependencies and
+> patches needed — everything below still assumes macOS.
+
 Features:
 - Runs a lightweight debuggable iOS/ macOS (Darwin) system with custom filesystem.
 - Boots you directly into a root shell in just a few seconds.

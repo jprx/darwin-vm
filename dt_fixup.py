@@ -201,6 +201,12 @@ def fixup(d, nvram_file):
 
   d['arm-io'].remove_child('dockchannel-uart')
 
+  # We don't emulate a SEP. Removing the node entirely (same trick as the
+  # 'sgx' removal in fixup_sptm) stops AppleCredentialManager/ ACMTRM from
+  # ever discovering a SEP nub to probe, instead of just marking it
+  # unavailable via a property (which didn't stop the retry spam).
+  d['arm-io'].remove_child('sep')
+
   # disable RTC timeout in IOKitInitializeTime
   # IOKitInitializeTime waits for the IORTC resource which never appears since
   # we don't load a driver for it. AppleARMPE::start checks for a "no-rtc" key
@@ -217,6 +223,13 @@ def fixup(d, nvram_file):
 
   # This fixes panic(cpu 0 caller 0xfffffff008b8e7b8): "AMFI: No PMGR?\n" @ConfigurationSettings.cpp:388
   d['defaults'].props['vmm-present'] = "u32:1"
+
+  # We don't emulate a SEP, so tell the kernel not to expect one. Without
+  # this, AppleCredentialManager/ ACMTRM believe SEP is present (per the
+  # stock sepfw-load-at-boot=1) and spam
+  # "ACMTRM: waitForSEPEndpoint: timed out waiting for AppleSEPManager"
+  # to the console forever.
+  d['chosen'].props['sepfw-load-at-boot'] = "u32:0"
 
   amcc=d['chosen']['lock-regs']['amcc']
   amcc.props['aperture-count'] = "u32:1"

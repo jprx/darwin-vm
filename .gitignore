@@ -1,0 +1,17 @@
+# Generated firmware output (produced by get_files.sh / fix_perms.sh)
+/firmware/
+/firmware-*/
+
+# ipsw's local extraction cache (created by get_files.sh)
+/ipsw_db/
+
+# Downloaded iOS sysroot bundle, used to patch the ramdisk on iphoneos targets
+/sysroot/
+/sysroot.tar.gz
+
+# Scratch mount points, in case one is left behind after a failed run
+/mnt/
+
+# qemu-sptm build output (the submodule ships its own .gitignore too, but this
+# covers the common case of running `mkdir build` from the repo root)
+/qemu-sptm/build/
