@@ -10,7 +10,7 @@ Features:
 - Compile and run your own programs as root in the VM, no jailbreak or kernel patches required.
 - Runs anywhere qemu runs (ARM host not required).
 - Supports emulating A19-A14 (iOS) and M5-M1 (macOS) CPUs.
-- Supports SPTM based kernels and CPUs with MIE.
+- Supports SPTM-based kernels and CPUs with MIE.
 - Can debug / patch the kernel, SPTM, TXM, dyld, launchd, and userspace programs.
 - Automated setup to get going in just a few minutes.
 
