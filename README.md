@@ -109,7 +109,7 @@ Notes:
 # Setup
 
 You'll need a few things:
-1. Access to a Mac with `python`, `jq`, `wget`, and `ipsw`.
+1. Access to a Mac with `python`, `jq`, and `ipsw`.
 2. A machine to build and run `qemu` on - this can be different to the first machine.
 3. (optional) The URL of the IPSW (iOS or macOS) you want to use. You don't need to download the IPSW, you just need the URL. If you don't care which version you boot, we provide a default one.
 
@@ -124,7 +124,7 @@ explanations of what these commands do/ how to customize things.
 Install dependencies:
 
 ```
-brew install jq wget ipsw
+brew install jq ipsw
 ```
 
 Clone this repo:
@@ -647,9 +647,9 @@ line and recompile qemu if you want to try it.
 
 # FAQ
 
-The system boots, but I don't have a shell, and I see this error in the log:
+### The system boots, but I don't have a shell, and I see this error in the log:
 
-`Failed to bootstrap path: path = /System/Library/LaunchDaemons/com.jprx.sh.plist, error = 122: Path had bad ownership/permissions`
+`Failed to bootstrap path: path = /System/Library/LaunchDaemons/com.jprx.bash.plist, error = 122: Path had bad ownership/permissions`
 
 This means you forgot to run `fix_perms` on the ramdisk. Run this and relaunch the VM:
 
@@ -693,6 +693,10 @@ Here are a collection of references I found helpful while working on this:
 - [Trung Nguyen's iPhone 11 emulation in qemu-t8030](https://github.com/TrungNguyen1909/qemu-t8030)
 - [Sven Peter's writeup on SPRR/ GXF](https://blog.svenpeter.dev/posts/m1_sprr_gxf/)
 - [Asahi Linux docs](https://asahilinux.org/docs/)
+
+## External Projects
+
+- `ios_sysroot.tar.gz` comes from [jprx/ios-cli-tools](https://github.com/jprx/ios-cli-tools).
 
 ## Credits
 

@@ -9,9 +9,7 @@ set -euo pipefail
 
 IPSW_BIN="ipsw_db"
 
-IOS_SYSROOT_URL="https://raw.githubusercontent.com/jprx/ios-cli-tools/refs/heads/main/prebuilt.tar.gz"
-IOS_SYSROOT_TARFILE="sysroot.tar.gz"
-IOS_SYSROOT="sysroot"
+IOS_SYSROOT_TARFILE="ios_sysroot.tar.gz"
 
 ADT_FIXUP="./dt_fixup.py"
 NVRAM_BIN="nvram.bin"
@@ -19,8 +17,7 @@ BUILD_TC="./build_tc.py"
 
 FW_DIR="firmware"
 
-MAC_PLIST="launchdaemons/com.jprx.bash.plist"
-IOS_PLIST="launchdaemons/com.jprx.sh.plist"
+SHELL_LAUNCHD_PLIST="launchdaemons/com.jprx.bash.plist"
 
 warn() {
     echo "warning: $*" 1>&2
@@ -38,10 +35,6 @@ ensure_installed() {
 
     if [[ ! -x $(command -v "ipsw") ]]; then
         die "missing ipsw command (brew install ipsw)"
-    fi
-
-    if [[ ! -x $(command -v "wget") ]]; then
-        die "missing wget command (brew install wget)"
     fi
 }
 
@@ -151,15 +144,6 @@ get_ramdisk() {
     # get_file "${trustcache_name}" "ramdisk.tc"
 }
 
-get_ios_sysroot() {
-    if [[ -d "${IOS_SYSROOT}" ]]; then
-        return
-    fi
-
-    wget "${IOS_SYSROOT_URL}" -O "${IOS_SYSROOT_TARFILE}"
-    tar xf "${IOS_SYSROOT_TARFILE}"
-}
-
 patch_ramdisk() {
     local ramdisk
     ramdisk="${FW_DIR}/ramdisk.dmg"
@@ -197,21 +181,20 @@ patch_ramdisk() {
 
     case "${SYS_SDK}" in
         'iphoneos')
-            get_ios_sysroot
-            cp "${IOS_PLIST}" "${livemount}/System/Library/LaunchDaemons"
+            cp "${SHELL_LAUNCHD_PLIST}" "${livemount}/System/Library/LaunchDaemons"
 
-            if [[ -z "${IOS_SYSROOT}" || ! -d "${IOS_SYSROOT}" ]]; then
-                echo "something's wrong with the iOS sysroot, stopping here"
+            if [[ ! -f "${IOS_SYSROOT_TARFILE}" ]]; then
+                echo "couldn't find the iOS sysroot"
                 exit 1
             fi
 
-            ditto "${IOS_SYSROOT}/bin" "${livemount}/bin"
-            ditto "${IOS_SYSROOT}/libexec" "${livemount}/libexec"
+            echo "extracting iOS sysroot..."
+            tar xf "${IOS_SYSROOT_TARFILE}" --directory "${livemount}" --strip-components 1
             echo "signing binaries..."
             find "${livemount}/bin" -type f -exec codesign -s - {} \;
             ;;
         'macosx')
-            cp "${MAC_PLIST}" "${livemount}/System/Library/LaunchDaemons"
+            cp "${SHELL_LAUNCHD_PLIST}" "${livemount}/System/Library/LaunchDaemons"
             ;;
         *)
             die "unknown SDK (${SYS_SDK})"
