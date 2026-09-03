@@ -178,11 +178,10 @@ patch_ramdisk() {
 
     mv "${livemount}/System/Library/LaunchDaemons" "${livemount}/System/Library/LaunchDaemons.old"
     mkdir "${livemount}/System/Library/LaunchDaemons"
+    cp "${SHELL_LAUNCHD_PLIST}" "${livemount}/System/Library/LaunchDaemons"
 
     case "${SYS_SDK}" in
         'iphoneos')
-            cp "${SHELL_LAUNCHD_PLIST}" "${livemount}/System/Library/LaunchDaemons"
-
             if [[ ! -f "${IOS_SYSROOT_TARFILE}" ]]; then
                 echo "couldn't find the iOS sysroot"
                 exit 1
@@ -194,7 +193,6 @@ patch_ramdisk() {
             find "${livemount}/bin" -type f -exec codesign -s - {} \;
             ;;
         'macosx')
-            cp "${SHELL_LAUNCHD_PLIST}" "${livemount}/System/Library/LaunchDaemons"
             ;;
         *)
             die "unknown SDK (${SYS_SDK})"

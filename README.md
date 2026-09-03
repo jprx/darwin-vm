@@ -142,6 +142,12 @@ iOS/ macOS version we install):
 ./fix_perms.sh firmware/ramdisk.dmg
 ```
 
+(Optional, but recommended) patch out some annoying kernel log messages:
+
+```
+./silence_logs.py firmware/bootkc
+```
+
 Build qemu:
 
 ```
@@ -198,25 +204,15 @@ os sdk:     iphoneos
    • Extracting DMG
    • Extracting Payload        path=firmware/ramdisk.dmg
 Patching firmware/ramdisk.dmg
-/dev/disk7
-/dev/disk8              EF57347C-0000-11AA-AA11-0030654
-/dev/disk8s1            41504653-0000-11AA-AA11-0030654 /private/var/folders/bn/mbs4rq1j2wnc3mkz3lv70hr80000gn/T/tmp.4UAV9eVIrO
-mounted firmware/ramdisk.dmg on /var/folders/bn/mbs4rq1j2wnc3mkz3lv70hr80000gn/T/tmp.4UAV9eVIrO
---2026-08-27 16:55:40--  https://raw.githubusercontent.com/jprx/ios-cli-tools/refs/heads/main/prebuilt.tar.gz
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)...
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 4513811 (4.3M) [application/octet-stream]
-Saving to: ‘sysroot.tar.gz’
-
-sysroot.tar.gz      100%[===================>]   4.30M  26.1MB/s    in 0.2s
-
-2026-08-27 16:55:40 (26.1 MB/s) - ‘sysroot.tar.gz’ saved [4513811/4513811]
-
+/dev/disk4
+/dev/disk5              EF57347C-0000-11AA-AA11-0030654
+/dev/disk5s1            41504653-0000-11AA-AA11-0030654 /private/var/folders/h_/t2dv3gjx09nd71bcfps3j71r0000gn/T/tmp.2kFIW8TswE
+mounted firmware/ramdisk.dmg on /var/folders/h_/t2dv3gjx09nd71bcfps3j71r0000gn/T/tmp.2kFIW8TswE
+extracting iOS sysroot...
 signing binaries...
 building trustcache...
 done!
-"disk7" ejected.
+"disk4" ejected.
 ```
 
 ## 2. Fixing Permissions
@@ -644,6 +640,23 @@ address by underflowing the virtual address base. This has the effect of
 putting SPTM and TXM at really strange virtual addresses, and is known to cause
 instability, but was helpful for me in debugging early XNU boot. Uncomment that
 line and recompile qemu if you want to try it.
+
+## 9. Removing annoying log messages
+
+`silence_logs.py` patches the boot KC to remove annoying log messages (such as
+`timed out waiting for AppleSEPManager`, `vm_shared_region_start_address()
+returned 0x1`, etc):
+
+```
+$ ./silence_logs.py firmware/bootkc
+0xfdb13 b'shared_region: %p [%d(%s)] check_np(0x%llx) vm_shared_region_start_address() returned 0x%x'
+0x6f7341 b'%s: %s: timed out waiting for AppleSEPManager (timeoutMs=%llu).'
+0xd19613 b'%s: %s(%d) \x00%s\n%s\x00%s
+```
+
+You can add your own strings to patch out by editing the `PATCHOUTS` dictionary
+in `silence_logs.py`. If you don't know which kext generated a log, put your
+strings to patch out under the `*` key.
 
 # FAQ
 
