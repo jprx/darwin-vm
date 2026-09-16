@@ -5,7 +5,7 @@ Run iOS/ macOS in Qemu. Supports emulating iPhone 17, 16, 15, 14, 13, and 12
 the kernel, edit the root filesystem, and run a root shell + custom programs.
 
 Features:
-- Runs a lightweight debuggable iOS/ macOS (Darwin) system with custom filesystem.
+- Runs a lightweight debuggable iOS/ macOS (Darwin) system with a custom filesystem.
 - Boots you directly into a root shell in just a few seconds.
 - Compile and run your own programs as root in the VM, no jailbreak or kernel patches required.
 - Runs anywhere qemu runs (ARM host not required).
