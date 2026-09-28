@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-FIRMWARE_DIR="firmware"
+: "${FIRMWARE_DIR:=firmware}"
 QEMU="qemu-sptm/build/qemu-system-aarch64"
 BOOT_ARGS="rd=md0 serial=3 -v -noprogress wdt=-1 wlan-olyhal-abort"
 

@@ -7,7 +7,7 @@ set -euo pipefail
 : "${DEVNAME:=iPhone17,3}"
 : "${URL:=https://updates.cdn-apple.com/2026FallFCS/5130b3f9-3b4e-469a-b60e-93f6b310cdd9/iPhone17,3_27.0_24A437_Restore.ipsw}"
 
-IPSW_BIN="ipsw_db"
+: "${IPSW_BIN:=ipsw_db}"
 
 IOS_SYSROOT_TARFILE="ios_sysroot.tar.gz"
 
@@ -15,7 +15,7 @@ ADT_FIXUP="./dt_fixup.py"
 NVRAM_BIN="nvram.bin"
 BUILD_TC="./build_tc.py"
 
-FW_DIR="firmware"
+FW_DIR="${FIRMWARE_DIR:-firmware}"
 
 SHELL_LAUNCHD_PLIST="launchdaemons/com.jprx.bash.plist"
 

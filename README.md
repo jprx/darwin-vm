@@ -218,6 +218,22 @@ done!
 "disk4" ejected.
 ```
 
+### Keep multiple firmware sets
+
+Set `FIRMWARE_DIR` when preparing and running a VM to keep different devices or
+OS builds in separate directories. `IPSW_BIN` selects the download directory:
+
+```sh
+DEVNAME="your_device_name" URL="your_ipsw_url" \
+  FIRMWARE_DIR=firmware/my-device IPSW_BIN=ipsw_db/my-device ./get_files.sh
+./fix_perms.sh firmware/my-device/ramdisk.dmg
+FIRMWARE_DIR=firmware/my-device ./run.sh
+```
+
+Use a different directory for each device/build. Without these variables, the
+scripts still use `firmware` and `ipsw_db`. Pass the selected firmware paths to
+other tools too, such as `./silence_logs.py firmware/my-device/bootkc`.
+
 ## 2. Fixing Permissions
 
 > [!IMPORTANT]
