@@ -7,7 +7,9 @@ BOOT_ARGS="rd=md0 serial=3 -v -noprogress wdt=-1 wlan-olyhal-abort"
 ENABLE_QEMUPORTS=0
 
 fix_tty() {
-    stty sane
+    if [[ -t 0 ]]; then
+        stty sane
+    fi
 }
 
 boot_qemu() {
