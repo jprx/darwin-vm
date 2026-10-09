@@ -292,6 +292,19 @@ takes no arguments:
 
 Use `ctrl+A` followed by `x` in the terminal to quit Qemu.
 
+To verify the guest kernel, root identity, and OS build, run these commands
+inside the VM:
+
+```sh
+uname -v
+id
+cat /System/Library/CoreServices/SystemVersion.plist
+```
+
+`id` should report `uid=0(root)`. The plist's `ProductVersion` and
+`ProductBuildVersion` identify the OS release and build; `sw_vers` may be absent
+from the restore ramdisk.
+
 ## 5. Add custom programs to the VM
 
 > [!IMPORTANT]
@@ -672,6 +685,21 @@ You can host an ssh server inside the VM and connect to it by tunneling TCP
 traffic over UART. See [TCP_TUNNELING_SSH.md](TCP_TUNNELING_SSH.md) for more.
 
 # FAQ
+
+### Why can't I write to `/tmp` after booting?
+
+On the tested macOS 27.0 (26A428) M4 Mac mini and iOS 27.0 (24A437) iPhone 17
+restore ramdisks, the root filesystem boots read-only and `/tmp` has no usable
+backing directory. A working root shell does not imply a writable filesystem.
+To add programs, follow [section 5](#5-add-custom-programs-to-the-vm) to edit the
+ramdisk on the host and update its trust cache.
+
+### The iPhone shell works, but SEP timeout messages keep appearing
+
+`timed out waiting for AppleSEPManager` messages continued after a successful
+iPhone 17 boot and did not prevent `uname`, `id`, or file reads. See
+[section 9](#9-removing-annoying-log-messages) for the optional log-silencing
+patch.
 
 ### The system boots, but I don't have a shell, and I see this error in the log:
 
