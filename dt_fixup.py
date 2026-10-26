@@ -150,7 +150,9 @@ def fixup_sptm(d):
   m.props['slide'] = struct.pack("<QQ", 0,0)
 
   # Skip the iommu init stuff (gfx-shared-region-base & friends)
-  d['arm-io'].remove_child('sgx')
+  # sn0w: Apple Watch (t8310) has no sgx GPU node; make this a no-op if absent.
+  if 'sgx' in d['arm-io']:
+    d['arm-io'].remove_child('sgx')
 
 def get_platform_name(d):
   compat = d['arm-io'].props['compatible']
@@ -231,6 +233,14 @@ def fixup(d, nvram_file, disable_network):
     d['arm-io']['sep']['iop-sep-nub']['InvalidateHmac'].props['sio-hmac1-disable-mask'] = "u64:0xffffffffffffffff"
 
   d['arm-io'].remove_child('dockchannel-uart')
+
+  # sn0w (watch7,11/t8310): remove top-level dock-connect nodes.
+  # AppleDockConnectAIC::start touches MMIO we don't model and panics with an
+  # "Everest implementation specific error" on the E-core as the fault is
+  # mis-attributed to the per-core error registers.
+  for name in ('dock-connect', 'dock-debug-wireless', 'dock-0pin'):
+    if name in d:
+      d.remove_child(name)
 
   if not disable_network: create_tunnel_devices(d)
 
